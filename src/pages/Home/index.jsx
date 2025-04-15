@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useFetch } from '../../utils/hooks';
 import PostCard from '../../components/PostCard';
@@ -7,6 +8,8 @@ import './index.sass';
 export default function Home() {
   const { isLoading, data, error } = useFetch('/api/posts');
   const { search } = useLocation();
+  const POSTS_PER_PAGE = 6;
+  const [visibleCount, setVisibleCount] = useState(POSTS_PER_PAGE);
 
   // Extract selected categories from URL
   const selectedCategories =
@@ -22,6 +25,12 @@ export default function Home() {
         postCategoryNames.includes(name)
       );
     }) || [];
+
+  const visiblePosts = filteredPosts.slice(0, visibleCount);
+
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + POSTS_PER_PAGE);
+  };
 
   if (isLoading) {
     return (
@@ -48,14 +57,17 @@ export default function Home() {
         <>
           <CategoryFilter posts={data.posts} />
           <div className="post-list">
-            {filteredPosts.length > 0 ? (
-              filteredPosts.map((post) => (
-                <PostCard key={post.id} post={post} />
-              ))
+            {visiblePosts.length > 0 ? (
+              visiblePosts.map((post) => <PostCard key={post.id} post={post} />)
             ) : (
               <p>No posts match selected categories.</p>
             )}
           </div>
+          {visibleCount < filteredPosts.length && (
+            <button className="load-more-btn" onClick={handleLoadMore}>
+              Load More
+            </button>
+          )}
         </>
       )}
     </main>
