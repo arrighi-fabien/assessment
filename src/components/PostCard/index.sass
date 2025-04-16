@@ -7,6 +7,8 @@
     border: 1px solid var(--primary-color)
     background: var(--background-color)
     border-radius: 25px
+    box-shadow: 0 4px 20px rgba(0, 0, 0, .1)
+    transition: all .3s ease-in-out
 
     &__title
         font-size: 1.5rem
@@ -35,3 +37,16 @@
     &__date
         font-size: 0.875rem
         color: #888
+
+    &:hover
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2)
+
+.fade-in
+    opacity: 0
+    transform: translateY(10px)
+    animation: fadeIn .5s ease-out forwards
+
+@keyframes fadeIn
+    to
+        opacity: 1
+        transform: translateY(0)
