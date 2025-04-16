@@ -4,18 +4,21 @@ import {
   Route,
   Navigate,
 } from 'react-router-dom';
+import Layout from './Layout';
 import Home from '../pages/Home';
 import PostDetail from '../pages/PostDetail';
 
 export default function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/post/:postId" element={<PostDetail />} />
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/post/:postId" element={<PostDetail />} />
 
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Layout>
     </Router>
   );
 }

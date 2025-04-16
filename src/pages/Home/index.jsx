@@ -11,7 +11,7 @@ export default function Home() {
   const POSTS_PER_PAGE = 6;
   const [visibleCount, setVisibleCount] = useState(POSTS_PER_PAGE);
 
-  // Extract selected categories from URL
+  // Get selected categories from the URL query string
   const selectedCategories =
     new URLSearchParams(search).get('category')?.split(',') || [];
 
@@ -26,15 +26,17 @@ export default function Home() {
       );
     }) || [];
 
+  // Limit number of posts shown (for "Load More")
   const visiblePosts = filteredPosts.slice(0, visibleCount);
 
   const handleLoadMore = () => {
     setVisibleCount((prev) => prev + POSTS_PER_PAGE);
   };
 
+  // Handle loading and error states
   if (isLoading) {
     return (
-      <main>
+      <main className="message fade-in">
         <h1>Loading...</h1>
       </main>
     );
@@ -42,27 +44,27 @@ export default function Home() {
 
   if (error) {
     return (
-      <main>
-        <h1>Error: {error.message}</h1>
+      <main className="message fade-in">
+        <h1>Error while loading posts</h1>
       </main>
     );
   }
 
+  // Render post list with filters and load more functionality
   return (
-    <main>
-      <h1>Blog Posts</h1>
+    <>
       {data?.posts?.length === 0 ? (
         <p>No posts found.</p>
       ) : (
         <>
           <CategoryFilter posts={data.posts} />
-          <div className="post-list">
+          <section className="post-list">
             {visiblePosts.length > 0 ? (
               visiblePosts.map((post) => <PostCard key={post.id} post={post} />)
             ) : (
               <p>No posts match selected categories.</p>
             )}
-          </div>
+          </section>
           {visibleCount < filteredPosts.length && (
             <button className="load-more-btn" onClick={handleLoadMore}>
               Load More
@@ -70,6 +72,6 @@ export default function Home() {
           )}
         </>
       )}
-    </main>
+    </>
   );
 }

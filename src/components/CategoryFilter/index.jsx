@@ -5,15 +5,20 @@ import './index.sass';
 export default function CategoryFilter({ posts }) {
   const navigate = useNavigate();
   const { search } = useLocation();
+
+  // Extract selected categories from URL
   const params = new URLSearchParams(search);
   const selectedCategories = params.get('category')?.split(',') || [];
 
   const handleCategoryClick = (category) => {
     const isSelected = selectedCategories.includes(category.name);
+
+    // Toggle category selection
     const updatedCategories = isSelected
       ? selectedCategories.filter((name) => name !== category.name)
       : [...selectedCategories, category.name];
 
+    // Update the URL with new category selections
     if (updatedCategories.length > 0) {
       params.set('category', updatedCategories.join(','));
     } else {
@@ -23,6 +28,7 @@ export default function CategoryFilter({ posts }) {
     navigate(`?${params.toString()}`);
   };
 
+  // Extract unique categories from all posts
   const uniqueCategories = posts
     .reduce((acc, post) => {
       post.categories.forEach((category) => {
@@ -35,18 +41,15 @@ export default function CategoryFilter({ posts }) {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <div>
-      <h2>Categories</h2>
-      <div className="categories-list">
-        {uniqueCategories.map((category) => (
-          <CategoryPill
-            key={category.id}
-            category={category}
-            onClick={handleCategoryClick}
-            selected={selectedCategories.includes(category.name)}
-          />
-        ))}
-      </div>
-    </div>
+    <section className="categories-list">
+      {uniqueCategories.map((category) => (
+        <CategoryPill
+          key={category.id}
+          category={category}
+          onClick={handleCategoryClick}
+          selected={selectedCategories.includes(category.name)}
+        />
+      ))}
+    </section>
   );
 }
